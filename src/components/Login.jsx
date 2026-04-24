@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { resolveBranchDisplayLabel } from '@/lib/utils';
 
 const Login = () => {
-  const schoolName = import.meta.env.VITE_SCHOOL_NAME || 'CJVB Académico';
+  const schoolName = import.meta.env.VITE_SCHOOL_NAME || 'CUEN';
   const demoEmail = `usuario@${String(import.meta.env.VITE_SCHOOL_CODE ?? '').toLowerCase()}.edu`;
   const { signIn } = useAuth();
   const { toast } = useToast();
@@ -54,7 +54,7 @@ const Login = () => {
                 <div className="flex justify-center mb-8">
                   <div className="w-48 h-48 rounded-full overflow-hidden shadow-2xl bg-gray-50 flex items-center justify-center">
                     <img
-                      src="/logo-cjvb.png"
+                      src="/logo-cuen.png"
                       alt={schoolName}
                       className="w-44 h-44 object-contain"
                       onError={(e) => {
