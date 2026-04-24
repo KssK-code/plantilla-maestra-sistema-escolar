@@ -1,0 +1,20 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# CJVB - Configuración de producción
+
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://xdtptwzqhkeivhgwtknu.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkdHB0d3pxaGtlaXZoZ3d0a251Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzEwMTEsImV4cCI6MjA5MjIwNzAxMX0.s0jt8u-BUbjMtrgxKjAJV2JLJ3ng6H6608niGp_AV1A"
+  VITE_SCHOOL_NAME = "CJVB"
+  VITE_SCHOOL_CODE = "CJVB"
+  VITE_BRANCH_NAME = "CJVB Académico"

@@ -1,0 +1,2 @@
+## Pages
+- [EduManager - Sistema de Gestión Escolar](/): Sistema completo de gestión escolar para administrar estudiantes, pagos, cursos y más. Interfaz moderna y fácil de usar.
