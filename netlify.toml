@@ -1,20 +1,16 @@
 [build]
-  publish = "dist"
   command = "npm run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
+  VITE_SUPABASE_URL = "REEMPLAZAR_CON_URL_SUPABASE_CLIENTE"
+  VITE_SUPABASE_ANON_KEY = "REEMPLAZAR_CON_ANON_KEY_CLIENTE"
+  VITE_SCHOOL_NAME = "REEMPLAZAR_CON_NOMBRE_CORTO"
+  VITE_SCHOOL_CODE = "REEMPLAZAR_CON_CODIGO"
+  VITE_BRANCH_NAME = "REEMPLAZAR_CON_NOMBRE_COMPLETO"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# CUEN - Configuración de producción
-
-[context.production.environment]
-  VITE_SUPABASE_URL = "https://fzhlytktxcpjjyvweywi.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aGx5dGt0eGNwamp5dndleXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTc4NjAsImV4cCI6MjA5MjUzMzg2MH0.2-xF6Ay6NNFedg_hVJ9tAntT37Tg2T8I5-pzh8b2jUM"
-  VITE_SCHOOL_NAME = "CUEN"
-  VITE_SCHOOL_CODE = "CUEN"
-  VITE_BRANCH_NAME = "Centro Universitario Empresarial del Norte"
