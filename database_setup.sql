@@ -205,7 +205,7 @@ CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (auth.r
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 
 -- School settings policies
-CREATE POLICY "Users can view school settings" ON school_settings FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Public can read school settings" ON school_settings FOR SELECT USING (true);
 CREATE POLICY "Users can update school settings" ON school_settings FOR UPDATE USING (auth.role() = 'authenticated');
 
 -- General policies for other tables (allow all operations for authenticated users)
