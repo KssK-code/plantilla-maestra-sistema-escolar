@@ -11,7 +11,7 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { format, parseISO } from 'date-fns';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { resolveSchoolDisplayName, getPublicCeevaLogoUrl } from '@/lib/utils';
+import { resolveSchoolDisplayName, getPublicLogoUrl } from '@/lib/utils';
 
 const AccountStatementSection = ({ students, schoolSettings }) => {
   const [selectedStudentId, setSelectedStudentId] = useState('');
@@ -136,7 +136,7 @@ const AccountStatementSection = ({ students, schoolSettings }) => {
         }
       } catch (e) {
         try {
-          await tryHeaderLogo(getPublicCeevaLogoUrl());
+          await tryHeaderLogo(getPublicLogoUrl());
           headerLogoOk = true;
         } catch (e2) {
           console.error('Error loading logo for PDF, using text instead.', e2);

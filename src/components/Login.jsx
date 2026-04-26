@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { resolveBranchDisplayLabel } from '@/lib/utils';
 
 const Login = () => {
-  const schoolName = import.meta.env.VITE_SCHOOL_NAME || 'CUEN';
+  const schoolName = import.meta.env.VITE_SCHOOL_NAME || 'Sistema Escolar';
   const demoEmail = `usuario@${String(import.meta.env.VITE_SCHOOL_CODE ?? '').toLowerCase()}.edu`;
   const { signIn } = useAuth();
   const { toast } = useToast();

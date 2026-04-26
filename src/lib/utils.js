@@ -8,7 +8,7 @@ export function cn(...inputs) {
 /** Evita mostrar placeholders tipo [NOMBRE_ESCUELA] desde BD; usa Vite en cliente. */
 export function resolveSchoolDisplayName(schoolSettings) {
 	const raw = typeof schoolSettings?.school_name === 'string' ? schoolSettings.school_name.trim() : '';
-	if (!raw || /NOMBRE_ESCUELA|\[NOMBRE_ESCUELA\]/i.test(raw) || /^CEEVA$/i.test(raw)) {
+	if (!raw || /NOMBRE_ESCUELA|\[NOMBRE_ESCUELA\]/i.test(raw)) {
 		return import.meta.env.VITE_SCHOOL_NAME || '';
 	}
 	return raw;
@@ -20,6 +20,6 @@ export function resolveBranchDisplayLabel() {
 	return typeof v === 'string' && v.trim() ? v.trim() : '';
 }
 
-export function getPublicCeevaLogoUrl() {
+export function getPublicLogoUrl() {
 	return '/logo.png';
 }

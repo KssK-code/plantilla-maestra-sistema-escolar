@@ -1,5 +1,5 @@
 import { toast } from '@/hooks/use-toast';
-import { resolveBranchDisplayLabel, getPublicCeevaLogoUrl } from './utils';
+import { resolveBranchDisplayLabel, resolveSchoolDisplayName, getPublicLogoUrl } from './utils';
 
 // Función principal para descargar comprobante de pago en PDF
 export async function downloadPaymentReceiptPDF(student, payment) {
@@ -88,7 +88,7 @@ export async function downloadPaymentReceiptPDFAlternative(student, payment, sch
     pdf.setFontSize(16);
     pdf.setFont('helvetica', 'bold');
     pdf.text(
-      `${import.meta.env.VITE_SCHOOL_NAME} - ${import.meta.env.VITE_BRANCH_NAME}`,
+      `${resolveSchoolDisplayName()}${resolveBranchDisplayLabel() ? ' - ' + resolveBranchDisplayLabel() : ''}`,
       105,
       startY,
       { align: 'center' }
@@ -299,7 +299,7 @@ function createReceiptHTML(student, payment) {
   const paymentAmount = getPaymentAmount(payment);
   const paymentDate = getPaymentDate(payment);
   const systemName = detectSystemName();
-  const logoSrc = getPublicCeevaLogoUrl();
+  const logoSrc = getPublicLogoUrl();
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">

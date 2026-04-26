@@ -2,7 +2,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { format, parseISO } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { resolveSchoolDisplayName, getPublicCeevaLogoUrl } from './utils';
+import { resolveSchoolDisplayName, getPublicLogoUrl } from './utils';
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -38,7 +38,7 @@ const drawHeader = async (doc, schoolSettings, title) => {
     }
   } catch (e) {
     try {
-      await tryAddLogo(getPublicCeevaLogoUrl());
+      await tryAddLogo(getPublicLogoUrl());
     } catch (e2) {
       console.error('Error loading logo for PDF, skipping.', e2);
       startY = 15;
