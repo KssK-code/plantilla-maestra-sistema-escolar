@@ -303,10 +303,7 @@ ALTER COLUMN schedule_id DROP NOT NULL;
 ALTER TABLE public.students
 ALTER COLUMN course DROP NOT NULL;
 
--- 6. Trigger duplicado (si se comparte Supabase con plataforma)
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-
--- 7. Recargar schema cache de PostgREST
+-- 6. Recargar schema cache de PostgREST
 NOTIFY pgrst, 'reload schema';
 
 -- 8. Columna teacher en courses
@@ -317,3 +314,10 @@ ALTER TABLE public.schedules ADD COLUMN IF NOT EXISTS start_date DATE;
 ALTER TABLE public.schedules ADD COLUMN IF NOT EXISTS end_date DATE;
 
 -- ============================================================
+
+-- ============================================================================
+-- LIMPIEZA FINAL (debe ser la ULTIMA sentencia del archivo)
+-- ============================================================================
+-- Eliminar trigger duplicado del sistema escolar para evitar conflicto
+-- con el trigger de la plataforma virtual cuando comparten Supabase.
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
