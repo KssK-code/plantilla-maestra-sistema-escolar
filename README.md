@@ -138,3 +138,14 @@ Todos los derechos reservados © 2025
 ---
 
 **Desarrollado con ❤️ para CEVM**
+
+## Orden de creación del admin (idempotente)
+
+A partir del fix `admin-backfill-idempotente`, **el orden no importa**:
+
+- ✅ **Opción A:** Correr `database_setup.sql` PRIMERO, luego crear admin en Auth → trigger dispara, profile creado automáticamente.
+- ✅ **Opción B:** Crear admin en Auth PRIMERO, luego correr `database_setup.sql` → el bloque de backfill al final del script crea el profile retroactivo y asigna `role = 'admin'`.
+
+Antes este flujo era frágil (Opción B fallaba silenciosamente). Ya no.
+
+> Bug detectado en cliente IVIP. Propagado a plantilla para evitar repetición en futuros clientes.
