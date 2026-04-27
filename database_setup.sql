@@ -1,4 +1,5 @@
--- CEVM Sistema Virtual - Database Schema
+-- [NOMBRE_ESCUELA] - Sistema de Control Escolar - Database Schema
+-- NOTA: el placeholder [NOMBRE_ESCUELA] es reemplazado automaticamente por mev-deploy.sh
 -- Zapopan, Jalisco
 -- Execute this SQL in your Supabase SQL Editor
 
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- Create school_settings table
 CREATE TABLE IF NOT EXISTS school_settings (
     id SERIAL PRIMARY KEY,
-    school_name TEXT DEFAULT 'CEVM',
+    school_name TEXT DEFAULT 'Mi Instituto',
     school_address TEXT,
     school_phone TEXT,
     school_email TEXT,
@@ -170,19 +171,19 @@ INSERT INTO school_settings (
     notifications_overdue_payments,
     notifications_upcoming_payments
 ) VALUES (
-    'CEEVA',
+    '[NOMBRE_ESCUELA]',
     'admin@[DOMINIO_ESCUELA]',
     true,
     true
 ) ON CONFLICT DO NOTHING;
 
--- Insert some sample courses
-INSERT INTO courses (name, description, duration, price) VALUES 
-    ('Computación Básica', 'Curso introductorio de computación', '3 meses', 1500.00),
-    ('Ofimática Avanzada', 'Microsoft Office avanzado', '2 meses', 1200.00),
-    ('Diseño Gráfico', 'Photoshop e Illustrator', '4 meses', 2000.00),
-    ('Programación Web', 'HTML, CSS, JavaScript', '6 meses', 3000.00)
-ON CONFLICT DO NOTHING;
+-- ============================================================================
+-- DEPRECATED: cursos demo CEVM eliminados (27-abr-2026)
+-- ============================================================================
+-- Razon: este seed insertaba cursos hardcoded de CEVM que no aplican a clientes
+-- nuevos. Cada cliente crea sus propios cursos desde el panel admin del sistema
+-- escolar. Los placeholders genericos contaminaban la marca de cada cliente.
+-- ============================================================================
 
 -- Enable Row Level Security on all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -257,18 +258,17 @@ CREATE TRIGGER update_document_templates_updated_at BEFORE UPDATE ON document_te
 CREATE TRIGGER update_issued_documents_updated_at BEFORE UPDATE ON issued_documents FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_attendance_updated_at BEFORE UPDATE ON attendance FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
--- Insert initial payment concepts
+-- Insert universal payment concepts (aplican a cualquier instituto)
+-- Cada cliente puede agregar mas desde el panel admin segun su oferta educativa
 INSERT INTO payment_concepts (name, active) VALUES 
-('Colegiatura Enfermeria', true),
-('Colegiatura Podologia', true),
-('Colegiatura Preparatoria', true),
-('Colegiatura Secundaria', true),
-('Inscripcion', true),
-('Re inscripcion', true),
-('Certificacion', true),
+('Inscripción', true),
+('Re inscripción', true),
+('Mensualidad', true),
+('Certificación', true),
 ('Examen Extraordinario', true),
 ('Constancia', true),
-('Credencial', true)
+('Credencial', true),
+('Material didáctico', true)
 ON CONFLICT (name) DO NOTHING;
 
 -- Grant necessary permissions

@@ -1,14 +1,60 @@
+# ═══════════════════════════════════════════════════════
+# Keep Supabase Alive
+# ═══════════════════════════════════════════════════════
+# Ping cada 3 días al endpoint REST de Supabase para evitar
+# que el proyecto se pause por inactividad.
+#
+# Free tier de Supabase pausa proyectos sin actividad después de 7 días.
+#
+# ⚙️ SETUP (lo configura MEV ANTES de entregar al cliente):
+# 1. Settings → Secrets and variables → Actions → New repository secret:
+#    - SUPABASE_URL      = https://[project-ref].supabase.co
+#    - SUPABASE_ANON_KEY = anon key del .env.local
+# 2. Validar con: Actions → Keep Supabase Alive → Run workflow
+#
+# El cliente NO toca este archivo. Todo se configura por MEV.
+# ═══════════════════════════════════════════════════════
+
 name: Keep Supabase Alive
+
 on:
   schedule:
-    - cron: '0 12 */3 * *'
-  workflow_dispatch:
+    # Cada 3 días a las 12:30 UTC (6:30 AM México Centro)
+    # Sistema escolar usa offset +30 min vs plataforma virtual para distribuir carga
+    - cron: '30 12 */3 * *'
+  workflow_dispatch:  # permite ejecutar manualmente desde Actions
+
 jobs:
-  ping:
+  ping-supabase:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase
+      - name: Ping Supabase REST API
         run: |
-          curl -s "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+          if [ -z "${{ secrets.SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            echo "❌ ERROR: Secrets SUPABASE_URL y/o SUPABASE_ANON_KEY no configurados"
+            echo ""
+            echo "MEV debe configurar en: Settings → Secrets and variables → Actions"
+            echo "  - SUPABASE_URL      = https://[project-ref].supabase.co"
+            echo "  - SUPABASE_ANON_KEY = anon key del .env.local"
+            exit 1
+          fi
+
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/profiles?limit=1")
+
+          echo "HTTP response code: $response"
+
+          if [ "$response" = "200" ] || [ "$response" = "401" ]; then
+            echo "✅ Supabase respondió correctamente — proyecto activo"
+            echo "   (200 = exitoso, 401 = anon key sin permiso pero proyecto activo)"
+            exit 0
+          else
+            echo "❌ Error: respuesta inesperada (HTTP $response)"
+            echo "   Posibles causas:"
+            echo "   - Proyecto Supabase pausado o eliminado"
+            echo "   - SUPABASE_URL incorrecto"
+            echo "   - Tabla 'profiles' no existe (cambia la tabla en este workflow)"
+            exit 1
+          fi

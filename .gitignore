@@ -48,3 +48,7 @@ setup-nuevo-sistema.ps1
 crear-sistema-respaldo-automatico.ps1
 FIX-IMPORTS.ps1
 LIMPIAR-PLANTILLA.ps1
+
+# Backups locales del setup (no committear)
+*.bak.*
+*.backup
