@@ -321,3 +321,41 @@ ALTER TABLE public.schedules ADD COLUMN IF NOT EXISTS end_date DATE;
 -- Eliminar trigger duplicado del sistema escolar para evitar conflicto
 -- con el trigger de la plataforma virtual cuando comparten Supabase.
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+
+-- ============================================================
+-- BACKFILL ADMIN — Idempotente
+-- ============================================================
+-- Caso típico: el admin se crea en Supabase Auth dashboard
+-- ANTES de correr este script. El trigger on_auth_user_created
+-- aún no existe en ese momento → no dispara → admin queda sin
+-- profile y no puede entrar al sistema.
+--
+-- Este bloque inserta profile para CUALQUIER usuario de
+-- auth.users que aún no tenga uno, asignando role='admin'
+-- al primer usuario encontrado.
+--
+-- Es idempotente: se puede correr N veces sin efectos adversos.
+-- Bug detectado en cliente IVIP (Instituto Virtual Internacional
+-- del Pacífico). Fix propagado a plantilla maestra.
+-- ============================================================
+
+INSERT INTO profiles (id, email, role, full_name)
+SELECT
+  u.id,
+  u.email,
+  'admin'::text,
+  COALESCE(u.raw_user_meta_data->>'full_name', 'Administrador')::text
+FROM auth.users u
+LEFT JOIN profiles p ON p.id = u.id
+WHERE p.id IS NULL;
+
+-- Promover a admin al primer usuario si existen perfiles sin admin
+UPDATE profiles
+SET role = 'admin'
+WHERE id = (
+  SELECT id FROM profiles
+  ORDER BY created_at ASC
+  LIMIT 1
+)
+AND NOT EXISTS (SELECT 1 FROM profiles WHERE role = 'admin');
