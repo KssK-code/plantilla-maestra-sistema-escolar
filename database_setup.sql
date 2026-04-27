@@ -313,6 +313,20 @@ ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS teacher TEXT;
 ALTER TABLE public.schedules ADD COLUMN IF NOT EXISTS start_date DATE;
 ALTER TABLE public.schedules ADD COLUMN IF NOT EXISTS end_date DATE;
 
+-- 10. Columnas address y birth_date en students (el form siempre las envía)
+-- Bug detectado en IVIP: PostgREST devuelve 400 PGRST204 si la columna no existe
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS birth_date DATE;
+
+-- 11. Unique constraint student_number (manejo de duplicados en frontend)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'students_student_number_key'
+  ) THEN
+    ALTER TABLE public.students ADD CONSTRAINT students_student_number_key UNIQUE (student_number);
+  END IF;
+END $$;
+
 -- ============================================================
 
 -- ============================================================================
