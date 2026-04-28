@@ -373,3 +373,67 @@ WHERE id = (
   LIMIT 1
 )
 AND NOT EXISTS (SELECT 1 FROM profiles WHERE role = 'admin');
+
+-- ============================================================================
+-- RLS POLICIES — FIX SANTA BARBARA 28-abr-2026
+-- ============================================================================
+-- 9 tablas tenían RLS habilitado pero políticas FOR ALL con auth.role()
+-- deprecado, sin distinción admin/staff para tablas sensibles.
+-- Síntoma: frontend puede recibir null silenciosamente → dashboards vacíos.
+-- Detectado en cliente Santa Barbara (28-abr-2026).
+-- Patrón idéntico al bug RLS de plantilla virtual (mergeado mismo día).
+-- ============================================================================
+
+-- Función is_admin() con SECURITY DEFINER (evita recursión RLS)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
+
+-- Grupo A: tablas operativas (staff puede ver todo)
+DROP POLICY IF EXISTS "students: lectura" ON public.students;
+CREATE POLICY "students: lectura" ON public.students
+FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "attendance: lectura" ON public.attendance;
+CREATE POLICY "attendance: lectura" ON public.attendance
+FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "schedules: lectura" ON public.schedules;
+CREATE POLICY "schedules: lectura" ON public.schedules
+FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "courses: lectura" ON public.courses;
+CREATE POLICY "courses: lectura" ON public.courses
+FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "document_templates: lectura" ON public.document_templates;
+CREATE POLICY "document_templates: lectura" ON public.document_templates
+FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "issued_documents: lectura" ON public.issued_documents;
+CREATE POLICY "issued_documents: lectura" ON public.issued_documents
+FOR SELECT TO authenticated USING (true);
+
+-- Grupo B: tablas sensibles (solo admin)
+DROP POLICY IF EXISTS "audit_log: admin lee" ON public.audit_log;
+CREATE POLICY "audit_log: admin lee" ON public.audit_log
+FOR SELECT TO authenticated USING (public.is_admin());
+
+DROP POLICY IF EXISTS "cash_cuts: admin lee" ON public.cash_cuts;
+CREATE POLICY "cash_cuts: admin lee" ON public.cash_cuts
+FOR SELECT TO authenticated USING (public.is_admin());
+
+DROP POLICY IF EXISTS "payments: admin lee" ON public.payments;
+CREATE POLICY "payments: admin lee" ON public.payments
+FOR SELECT TO authenticated USING (public.is_admin());
