@@ -113,3 +113,26 @@ WHERE role = 'admin';
 \echo '  y volver a correr database_setup.sql (backfill).'
 \echo '════════════════════════════════════════════════════════'
 \echo ''
+
+-- ============================================================================
+-- CHECK 13: Cobertura de políticas RLS en TODAS las tablas
+-- ============================================================================
+-- Detecta tablas con RLS habilitado pero sin políticas SELECT.
+-- Sin este check, frontend recibe null silenciosamente → dashboards vacíos.
+-- ============================================================================
+WITH tablas_sin_policy AS (
+  SELECT c.relname as tabla
+  FROM pg_class c
+  LEFT JOIN pg_policy p ON p.polrelid = c.oid AND p.polcmd = 'r'
+  WHERE c.relnamespace = 'public'::regnamespace
+    AND c.relkind = 'r'
+    AND c.relrowsecurity = true
+  GROUP BY c.relname
+  HAVING COUNT(p.oid) = 0
+)
+SELECT
+  CASE
+    WHEN COUNT(*) = 0 THEN '✅ CHECK 13: Todas las tablas con RLS tienen al menos 1 SELECT policy'
+    ELSE '❌ FAIL CHECK 13: ' || COUNT(*) || ' tablas sin SELECT policy: ' || string_agg(tabla, ', ')
+  END as resultado
+FROM tablas_sin_policy;
