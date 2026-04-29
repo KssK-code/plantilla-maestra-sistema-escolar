@@ -33,7 +33,7 @@ const navItems = [
   { icon: Settings, label: 'Ajustes', section: 'settings' },
 ];
 
-const Sidebar = ({ activeSection, setActiveSection, schoolSettings, profile }) => {
+const Sidebar = ({ activeSection, setActiveSection, schoolSettings, profile, sidebarOpen, setSidebarOpen }) => {
   const handleLogout = () => {
     const keys = Object.keys(localStorage);
     for (let key of keys) {
@@ -47,12 +47,28 @@ const Sidebar = ({ activeSection, setActiveSection, schoolSettings, profile }) =
   const profileName = profile?.full_name || 'Usuario';
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ x: -250 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 120 }}
-      className="flex flex-col w-64 bg-slate-900/80 backdrop-blur-lg text-white border-r border-slate-700/50"
+      className={`
+        flex flex-col w-64 shrink-0
+        fixed md:relative inset-y-0 left-0 z-50
+        bg-slate-900/95 md:bg-slate-900/80 backdrop-blur-lg
+        text-white border-r border-slate-700/50
+        transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}
     >
+      {/* Botón cerrar — solo mobile */}
+      <button
+        className="md:hidden absolute top-4 right-4 text-white/70 hover:text-white p-1"
+        onClick={() => setSidebarOpen(false)}
+        aria-label="Cerrar menú"
+      >
+        ✕
+      </button>
+
       <div className="p-6 flex items-center space-x-4 border-b border-slate-700/50">
         <img
           src={schoolSettings?.logo_url || '/logo.png'}
@@ -71,7 +87,10 @@ const Sidebar = ({ activeSection, setActiveSection, schoolSettings, profile }) =
             key={item.section}
             variant={activeSection === item.section ? 'secondary' : 'ghost'}
             className="w-full justify-start"
-            onClick={() => setActiveSection(item.section)}
+            onClick={() => {
+              setActiveSection(item.section);
+              if (window.innerWidth < 768) setSidebarOpen(false);
+            }}
           >
             <item.icon className="mr-3 h-5 w-5" />
             {item.label}

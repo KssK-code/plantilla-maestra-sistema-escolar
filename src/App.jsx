@@ -24,7 +24,7 @@ import PlaceholderSection from '@/components/PlaceholderSection';
 import AuditLogSection from '@/components/AuditLogSection';
 
 const backgroundThemes = {
-  default: { from: '#1e1b4b', via: '#4c1d95', to: '#0f172a' },
+  default: { from: '#001040', via: '#000820', to: '#000412' },
   sunset: { from: '#4a044e', via: '#c12b4b', to: '#f7b733' },
   ocean: { from: '#000428', via: '#004e92', to: '#1CB5E0' },
   forest: { from: '#134E5E', via: '#203A43', to: '#71B280' },
@@ -35,6 +35,7 @@ const backgroundThemes = {
 function App() {
   const { session, user, loading: authLoading } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [students, setStudents] = useState([]);
   const [payments, setPayments] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -179,7 +180,7 @@ function App() {
 
   if (authLoading) {
     return (
-      <div className="flex min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 justify-center items-center">
+      <div className="flex min-h-screen bg-gradient-to-br from-[#001040] via-[#000820] to-[#000412] justify-center items-center">
         <Loader2 className="h-16 w-16 animate-spin text-white" />
       </div>
     );
@@ -196,22 +197,46 @@ function App() {
         <meta name="description" content="Sistema completo de gestión escolar para administrar estudiantes, pagos, cursos y más. Interfaz moderna y fácil de usar." />
       </Helmet>
       
-      <div className="flex min-h-screen">
-        <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} schoolSettings={schoolSettings} profile={profile} />
-        
+      <div className="flex min-h-screen relative">
+        {/* Backdrop mobile — cierra sidebar al tocar fuera */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        <Sidebar
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          schoolSettings={schoolSettings}
+          profile={profile}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+
         <main className="flex-1 overflow-auto">
+          {/* Hamburger button — solo visible en mobile */}
+          <button
+            className="md:hidden fixed top-4 left-4 z-30 p-2 bg-slate-800/90 backdrop-blur rounded-lg text-white shadow-lg"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Abrir menú"
+          >
+            ☰
+          </button>
+
           <motion.div
             key={activeSection}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="p-8"
+            className="p-8 pt-16 md:pt-8"
           >
             {renderSection()}
           </motion.div>
         </main>
-        
+
         <Toaster />
       </div>
     </>
