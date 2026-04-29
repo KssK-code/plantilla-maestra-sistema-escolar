@@ -48,9 +48,6 @@ const Sidebar = ({ activeSection, setActiveSection, schoolSettings, profile, sid
 
   return (
     <motion.div
-      initial={{ x: -250 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.5, type: 'spring', stiffness: 120 }}
       className={`
         flex flex-col w-64 shrink-0
         fixed md:relative inset-y-0 left-0 z-50
