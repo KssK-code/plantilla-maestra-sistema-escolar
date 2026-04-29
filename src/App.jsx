@@ -24,7 +24,7 @@ import PlaceholderSection from '@/components/PlaceholderSection';
 import AuditLogSection from '@/components/AuditLogSection';
 
 const backgroundThemes = {
-  default: { from: '#001040', via: '#000820', to: '#000412' },
+  default: { from: '#1e1b4b', via: '#4c1d95', to: '#0f172a' },
   sunset: { from: '#4a044e', via: '#c12b4b', to: '#f7b733' },
   ocean: { from: '#000428', via: '#004e92', to: '#1CB5E0' },
   forest: { from: '#134E5E', via: '#203A43', to: '#71B280' },
@@ -180,7 +180,7 @@ function App() {
 
   if (authLoading) {
     return (
-      <div className="flex min-h-screen bg-gradient-to-br from-[#001040] via-[#000820] to-[#000412] justify-center items-center">
+      <div className="flex min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 justify-center items-center">
         <Loader2 className="h-16 w-16 animate-spin text-white" />
       </div>
     );

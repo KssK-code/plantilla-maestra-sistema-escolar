@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const backgroundThemes = {
-  default: { name: 'Navy INEV', from: '#001040', via: '#000820', to: '#000412' },
+  default: { name: 'Púrpura Nocturno', from: '#1e1b4b', via: '#4c1d95', to: '#0f172a' },
   sunset: { name: 'Atardecer', from: '#4a044e', via: '#c12b4b', to: '#f7b733' },
   ocean: { name: 'Océano Profundo', from: '#000428', via: '#004e92', to: '#1CB5E0' },
   forest: { name: 'Bosque Místico', from: '#134E5E', via: '#203A43', to: '#71B280' },
