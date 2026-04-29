@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const backgroundThemes = {
-  default: { name: 'Púrpura Nocturno', from: '#1e1b4b', via: '#4c1d95', to: '#0f172a' },
+  default: { name: 'Navy INEV', from: '#001040', via: '#000820', to: '#000412' },
   sunset: { name: 'Atardecer', from: '#4a044e', via: '#c12b4b', to: '#f7b733' },
   ocean: { name: 'Océano Profundo', from: '#000428', via: '#004e92', to: '#1CB5E0' },
   forest: { name: 'Bosque Místico', from: '#134E5E', via: '#203A43', to: '#71B280' },
@@ -25,7 +25,7 @@ const SettingsSection = ({ onSettingsChange }) => {
     school_phone: '',
     school_email: '',
     logo_url: '',
-    primary_color: '262, 83%, 58%',
+    primary_color: '225, 100%, 13%',
     background_theme: 'default',
     notifications_overdue_payments: true,
     notifications_upcoming_payments: true,

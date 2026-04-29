@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS school_settings (
     school_phone TEXT,
     school_email TEXT,
     logo_url TEXT,
-    primary_color TEXT DEFAULT '262, 83%, 58%',
+    primary_color TEXT DEFAULT '225, 100%, 13%',
     background_theme TEXT DEFAULT 'default',
     notifications_overdue_payments BOOLEAN DEFAULT true,
     notifications_upcoming_payments BOOLEAN DEFAULT true,
