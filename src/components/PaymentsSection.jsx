@@ -425,7 +425,7 @@ const PaymentsSection = ({ payments, students, refreshData, schoolSettings }) =>
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
-        className="flex justify-between items-center"
+        className="flex flex-wrap justify-between items-start gap-3"
       >
         <div>
           <h1 className="text-3xl font-bold gradient-text mb-2">
@@ -435,7 +435,10 @@ const PaymentsSection = ({ payments, students, refreshData, schoolSettings }) =>
             Sistema organizacional cronológico para mejor control de flujo de efectivo
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <Button onClick={openNewDialog} className="btn-primary w-full sm:w-auto sm:order-last">
+            <Plus className="w-4 h-4 mr-2" />Nuevo Pago
+          </Button>
           {/* Selector de vista */}
           <div className="flex bg-white/10 rounded-lg p-1">
             <Button
@@ -443,8 +446,8 @@ const PaymentsSection = ({ payments, students, refreshData, schoolSettings }) =>
               size="sm"
               onClick={() => setViewMode('dashboard')}
               className={`${
-                viewMode === 'dashboard' 
-                  ? 'bg-white text-black' 
+                viewMode === 'dashboard'
+                  ? 'bg-white text-black'
                   : 'text-white hover:bg-white/20'
               }`}
             >
@@ -456,8 +459,8 @@ const PaymentsSection = ({ payments, students, refreshData, schoolSettings }) =>
               size="sm"
               onClick={() => setViewMode('blocks')}
               className={`${
-                viewMode === 'blocks' 
-                  ? 'bg-white text-black' 
+                viewMode === 'blocks'
+                  ? 'bg-white text-black'
                   : 'text-white hover:bg-white/20'
               }`}
             >
@@ -465,9 +468,6 @@ const PaymentsSection = ({ payments, students, refreshData, schoolSettings }) =>
               Bloques
             </Button>
           </div>
-          <Button onClick={openNewDialog} className="btn-primary">
-            <Plus className="w-4 h-4 mr-2" />Nuevo Pago
-          </Button>
         </div>
       </motion.div>
 
