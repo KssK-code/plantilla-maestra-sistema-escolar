@@ -6,6 +6,13 @@ import { resolveSchoolDisplayName, getPublicLogoUrl } from './utils';
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
+function openPdfInNewTab(doc) {
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
 const drawHeader = async (doc, schoolSettings, title) => {
   let startY = 15;
   const resolvedName = resolveSchoolDisplayName(schoolSettings);
@@ -106,7 +113,7 @@ export const generateCashCutPdf = async (cut, cutPayments, schoolSettings) => {
     headStyles: { fillColor: [41, 128, 185] },
   });
 
-  doc.save(`corte_caja_${cut.cut_number}.pdf`);
+  openPdfInNewTab(doc);
 };
 
 
@@ -154,7 +161,7 @@ export const generateAttendanceListPdf = async (schedule, students, schoolSettin
         }
     });
 
-    doc.save(`lista_asistencia_${schedule.courses.name.replace(/\s/g, '_')}.pdf`);
+    openPdfInNewTab(doc);
 };
 
 export const generateIncomeByConceptPdf = async (payments, dateRange, schoolSettings) => {
@@ -185,7 +192,7 @@ export const generateIncomeByConceptPdf = async (payments, dateRange, schoolSett
     headStyles: { fillColor: [41, 128, 185] },
   });
 
-  doc.save(`reporte_ingresos_concepto_${dateRange.from}_${dateRange.to}.pdf`);
+  openPdfInNewTab(doc);
 };
 
 export const generateEnrollmentsPdf = async (students, dateRange, schoolSettings) => {
@@ -226,7 +233,7 @@ export const generateEnrollmentsPdf = async (students, dateRange, schoolSettings
   doc.setFont(undefined, 'bold');
   doc.text(`TOTAL DE INSCRIPCIONES: ${students.length}`, 15, finalY);
 
-  doc.save(`reporte_inscripciones_${dateRange.from}_${dateRange.to}.pdf`);
+  openPdfInNewTab(doc);
 };
 
 export const generateCashCutsPdf = async (cashCuts, dateRange, schoolSettings) => {
@@ -254,7 +261,7 @@ export const generateCashCutsPdf = async (cashCuts, dateRange, schoolSettings) =
     headStyles: { fillColor: [41, 128, 185] },
   });
 
-  doc.save(`reporte_cortes_caja_${dateRange.from}_${dateRange.to}.pdf`);
+  openPdfInNewTab(doc);
 };
 
 export const generatePaymentsByConceptPdf = async (payments, students, selectedConcept, dateRange, schoolSettings) => {
@@ -336,5 +343,5 @@ export const generatePaymentsByConceptPdf = async (payments, students, selectedC
   doc.setFontSize(8);
   doc.text(`Generado el ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, 15, pageHeight - 10);
 
-  doc.save(`reporte-${selectedConcept.toLowerCase().replace(/\s+/g, '-')}-${dateRange.from}-${dateRange.to}.pdf`);
+  openPdfInNewTab(doc);
 };

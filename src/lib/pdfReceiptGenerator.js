@@ -20,8 +20,12 @@ export async function downloadPaymentReceiptPDF(student, payment) {
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     
-    // Generar y descargar PDF
-    await html2pdf().set(options).from(htmlContent).save();
+    // Generar PDF y abrir en nueva pestaña (preserva back-stack del browser)
+    const pdfDoc = await html2pdf().set(options).from(htmlContent).toPdf().get('pdf');
+    const blob = pdfDoc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
     
     console.log('✅ PDF descargado exitosamente (html2pdf)');
     return { success: true };
@@ -171,9 +175,11 @@ export async function downloadPaymentReceiptPDFAlternative(student, payment, sch
     pdf.text(`Comprobante generado automáticamente - ${new Date().toLocaleDateString('es-MX')}`, 
              105, 280, { align: 'center' });
     
-    // Descargar
-    const filename = `comprobante-pago-${studentName.replace(/\s+/g, '-')}-${Date.now()}.pdf`;
-    pdf.save(filename);
+    // Abrir en nueva pestaña (preserva back-stack del browser)
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
     
     console.log('✅ PDF descargado exitosamente (alternativo)');
     return { success: true };
