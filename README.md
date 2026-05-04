@@ -169,3 +169,13 @@ cp ~/clientes-MEV/[CLIENTE]/assets-cliente/logos/[archivo].png public/logo.png
 Si `verify-logo.sh` falla con "ERROR: ... muy pequeño" o "no es un PNG válido", **NO hacer deploy**.
 
 **Bug histórico:** EDUXA (3-may-2026) entregó con logo invisible (1×1 px transparente, 70 bytes) en login + dashboard + comprobantes de pago. La plantilla ahora trae placeholder visible como red de seguridad visual + script `verify-logo.sh` como recordatorio activo.
+
+### Cómo funciona la verificación del logo
+
+El placeholder `public/logo.png` tiene embebido un marker invisible `MEV-PLACEHOLDER-DO-NOT-DEPLOY` en su metadata PNG (tEXt chunk).
+
+Cuando ejecutas `./scripts/verify-logo.sh`:
+- Si el logo es el placeholder → detecta el marker y FALLA con error
+- Si el logo es el real del cliente → no tiene marker y PASA
+
+**No tienes que hacer nada especial:** cuando copias el logo del cliente sobre `public/logo.png`, el marker desaparece automáticamente porque el archivo entero se reemplaza.
