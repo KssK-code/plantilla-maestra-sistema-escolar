@@ -149,3 +149,33 @@ A partir del fix `admin-backfill-idempotente`, **el orden no importa**:
 Antes este flujo era frágil (Opción B fallaba silenciosamente). Ya no.
 
 > Bug detectado en cliente IVIP. Propagado a plantilla para evitar repetición en futuros clientes.
+
+---
+
+## ⚠️ Logo del cliente (OBLIGATORIO antes de deploy)
+
+`public/logo.png` viene con un **placeholder MEV genérico** (200x200, círculo navy con texto "MEV PLACEHOLDER"). Si la persona que despliega olvida reemplazarlo, el cliente verá un logo genérico en login, dashboard y comprobantes de pago.
+
+**Antes de deploy a Netlify, ejecutar:**
+
+```bash
+# 1. Copiar logo real del cliente
+cp ~/clientes-MEV/[CLIENTE]/assets-cliente/logos/[archivo].png public/logo.png
+
+# 2. Verificar que se reemplazó correctamente
+./scripts/verify-logo.sh
+```
+
+Si `verify-logo.sh` falla con "ERROR: ... muy pequeño" o "no es un PNG válido", **NO hacer deploy**.
+
+**Bug histórico:** EDUXA (3-may-2026) entregó con logo invisible (1×1 px transparente, 70 bytes) en login + dashboard + comprobantes de pago. La plantilla ahora trae placeholder visible como red de seguridad visual + script `verify-logo.sh` como recordatorio activo.
+
+### Cómo funciona la verificación del logo
+
+El placeholder `public/logo.png` tiene embebido un marker invisible `MEV-PLACEHOLDER-DO-NOT-DEPLOY` en su metadata PNG (tEXt chunk).
+
+Cuando ejecutas `./scripts/verify-logo.sh`:
+- Si el logo es el placeholder → detecta el marker y FALLA con error
+- Si el logo es el real del cliente → no tiene marker y PASA
+
+**No tienes que hacer nada especial:** cuando copias el logo del cliente sobre `public/logo.png`, el marker desaparece automáticamente porque el archivo entero se reemplaza.
