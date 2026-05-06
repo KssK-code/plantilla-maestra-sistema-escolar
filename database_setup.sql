@@ -327,6 +327,15 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- 12. Columna status_change_date (Bug 34, mergeado desde fix-student-status.sql el 5-may-2026)
+-- Bug detectado en EDUXA y ONCA: StudentsSection.jsx hace PATCH /students con status_change_date,
+-- PostgREST devuelve 400 si la columna no existe. DEFAULT NOW() backfill automático en existing rows.
+ALTER TABLE public.students
+ADD COLUMN IF NOT EXISTS status_change_date TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+COMMENT ON COLUMN public.students.status_change_date IS
+  'Fecha del último cambio de status (baja temporal/definitiva). Bug 34 fix.';
+
 -- ============================================================
 
 -- ============================================================================

@@ -179,3 +179,29 @@ Cuando ejecutas `./scripts/verify-logo.sh`:
 - Si el logo es el real del cliente → no tiene marker y PASA
 
 **No tienes que hacer nada especial:** cuando copias el logo del cliente sobre `public/logo.png`, el marker desaparece automáticamente porque el archivo entero se reemplaza.
+
+---
+
+## 🐛 Bug 34 — `students` PATCH 400 (resuelto en `database_setup.sql`)
+
+**Síntoma histórico:** click "Baja temporal" o "Baja definitiva" sobre un estudiante → `PATCH /rest/v1/students` retorna `400 Bad Request`.
+
+**Causa:** `StudentsSection.jsx` referencia la columna `status_change_date` desde el inicio. Esa columna venía únicamente en `fix-student-status.sql`, NO en `database_setup.sql`. Clientes nuevos que solo corrían el setup principal terminaban con la tabla incompleta.
+
+**Estado actual (post-5-may-2026):**
+
+- ✅ `database_setup.sql` ahora incluye `status_change_date` en el bloque "FIXES OBLIGATORIOS" (item #12). Clientes nuevos ya nacen con la columna.
+- ✅ `fix-student-status.sql` se mantiene como migration script para clientes existentes pre-5-may-2026 (con header de aviso).
+
+**Auditar un cliente existente:**
+
+```sql
+SELECT EXISTS (
+  SELECT 1 FROM information_schema.columns
+  WHERE table_name = 'students' AND column_name = 'status_change_date'
+);
+-- true  = sano (no hacer nada)
+-- false = afectado (correr fix-student-status.sql)
+```
+
+> Bug detectado en EDUXA (#12, 3-may-2026) y ONCA (#15, 5-may-2026). Documentado en `mev-tools/PLAYBOOK-BUGS-CONOCIDOS.md` (#34).
