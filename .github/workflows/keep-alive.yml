@@ -19,9 +19,10 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Cada 3 días a las 12:30 UTC (6:30 AM México Centro)
-    # Sistema escolar usa offset +30 min vs plataforma virtual para distribuir carga
-    - cron: '30 12 */3 * *'
+    # Cada 3 días a las 00:00 UTC (6:00 PM México Centro día anterior)
+    # Sistema escolar desfasado 12h del plataforma virtual (que corre a 12:00 UTC)
+    # para evitar correlación de fallos en la misma ventana del runner GH Actions
+    - cron: '0 0 */3 * *'
   workflow_dispatch:  # permite ejecutar manualmente desde Actions
 
 jobs:
@@ -40,6 +41,7 @@ jobs:
           fi
 
           response=$(curl -s -o /dev/null -w "%{http_code}" \
+            --retry 3 --retry-delay 5 --retry-all-errors \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
             "${{ secrets.SUPABASE_URL }}/rest/v1/profiles?limit=1")
